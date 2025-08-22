@@ -345,6 +345,7 @@ return [
     'khasra_required' => 'कृपया खसरा नंबर चुनें',
     'land_type_required' => 'कृपया भूमि का प्रकार चुनें',
     'proposed_area_required' => 'कृपया प्रस्तावित क्षेत्र दर्ज करें',
+    'land_surrendered_detail_required' => 'कृपया समर्पित की गई भूमि का विवरण दर्ज करें',
 
     // Step 3
     'railway_distance_required' => 'कृपया रेलवे दूरी दर्ज करें',

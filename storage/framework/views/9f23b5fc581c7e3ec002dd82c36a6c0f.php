@@ -1592,6 +1592,7 @@ unset($__errorArgs, $__bag); ?>"
             khsra: <?php echo json_encode(__('labels.khasra_required'), 15, 512) ?>,
             type_of_land: <?php echo json_encode(__('labels.land_type_required'), 15, 512) ?>,
             proposed_area: <?php echo json_encode(__('labels.proposed_area_required'), 15, 512) ?>,
+            land_surrendered_detail: <?php echo json_encode(__('labels.land_surrendered_detail_required'), 15, 512) ?>,
 
             // Step 3
             railway_distance: <?php echo json_encode(__('labels.railway_distance_required'), 15, 512) ?>,
@@ -1654,6 +1655,7 @@ unset($__errorArgs, $__bag); ?>"
                 }
             });
         });
+
 
 
         function fillPreview(data) {

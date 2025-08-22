@@ -344,6 +344,8 @@ return [
     'khasra_required' => 'Please select khasra number',
     'land_type_required' => 'Please select type of land',
     'proposed_area_required' => 'Please enter proposed area',
+    'land_surrendered_detail_required' => 'Please enter details of land surrendered',
+
 
     // Step 3
     'railway_distance_required' => 'Please enter railway distance',

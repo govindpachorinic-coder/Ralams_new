@@ -1,6 +1,6 @@
 <div class="header-bar">
     <div class="logo-container">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Emblem_of_India.svg/1200px-Emblem_of_India.svg.png"
+        <img src="<?php echo e(asset('public_assets/images/emblem-dark.png')); ?>"
             alt="Logo" />
         <div class="sys-titles">
             <span class="sys-title-main"><?php echo e(__('labels.project_name')); ?></span>
@@ -26,6 +26,7 @@
     </button>
 
 </div>
+
 
 
 
