@@ -149,8 +149,11 @@
 		<div id="page-content-wrapper">
 			@include('header')
     @yield('content')
-	@include('footer')	
-    <div id="ajax-loader" style="display:none;">
+	@include('footer')
+
+		</div>
+
+		<div id="ajax-loader" style="display:none;">
 			<div class="spinner"></div>
 		</div>
 		<!-- /#page-content-wrapper -->

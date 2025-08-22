@@ -246,11 +246,12 @@ body {
 @section('content')
 <div class="container-fluid main-layout py-4 px-1 px-md-3">
     <div class="bg-container-section rounded-3 mb-0">
-        {{-- Info Bar --}}
+        {{-- Info Bar --}}        
+        <!-- <a href="{{route('application.details',[$details->status,base64_encode($details->id)])}}" class="btn btn-primary custom-btn flex-fill" data-action="back" type="button">Back</a>         -->
         <div class="row g-3">
             <div class="col-md-4 col-sm-6 col-12">
                 <div class="prop-badge prop-grey d-flex align-items-center border h-100">
-                    <i class="fa fa-file-text me-2"></i>
+                    <i class="fa fa-file me-2"></i>
                     <span>{{ __("labels.app_no") }}: <span class="fw-semibold text-break">{{ $details->application->application_number }}</span></span>
                 </div>
             </div>
@@ -274,7 +275,7 @@ body {
             <div class="col-md-4 col-sm-6 col-12">
                 <div class="prop-badge prop-grey d-flex align-items-center border h-100">
                     <i class="fa fa-map-marker mr-2"></i>
-                    <span>{{ __("labels.land_type") }}: <span class="fw-semibold text-break">{{ $details->application->landDeatil->land_type ?? 'N/A' }}</span></span>
+                    <span>{{ __("labels.land_type") }}: <span class="fw-semibold text-break">{{ $details->application->landDetail->land_type ?? 'N/A' }}</span></span>
                 </div>
             </div>
            
@@ -289,49 +290,14 @@ body {
         </div>
 
         <div class="row g-3 mt-1">
-             <div class="col-md-12 col-sm-12 col-12">
+             <div class="col-md-4 col-sm-12 col-12">
                 <div class="prop-badge prop-grey d-flex align-items-center border h-100">
                     <i class="fa fa-thumbtack mr-2"></i>
                     <span>{{ __("labels.purpose") }}: <span class="fw-semibold text-break">{{ $details->application->purpose->purpose_name ?? 'N/A' }}</span></span>
                 </div>
             </div>
 
-        </div>
-
-        <!-- <div class="col-md-3">
-            <div class="prop-badge prop-grey d-flex align-items-center p-2 rounded bg-light mb-2">
-                <i class="fa fa-map-marker mr-2" aria-hidden="true"></i>
-                <span>{{ __("labels.village") }}: <span class="fw-semibold text-break">{{ $details->application->landDeatil->village->Village_Name ?? 'N/A' }}</span></span>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="prop-badge prop-grey d-flex align-items-center p-2 rounded bg-light mb-2">
-                <i class="fa fa-user mr-2" aria-hidden="true"></i>
-                <span>{{ __("labels.land_owner_name") }}: <span class="fw-semibold text-break">{{ $details->application->landOwnerDetail[0]->owner_name ?? 'N/A' }}</span></span>
-            </div>
-        </div> -->
-
-        <!-- <div class="col-md-3">
-            <div class="prop-badge prop-grey d-flex align-items-center p-2 rounded bg-light mb-2">
-                <i class="fa fa-map mr-2" aria-hidden="true"></i>
-                <span>{{ __("labels.khasra_no") }}: <span class="fw-semibold text-break">{{ $details->application->landOwnerDetail[0]->khasra_number ?? 'N/A' }}</span></span>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="prop-badge prop-grey d-flex align-items-center p-2 rounded bg-light mb-2">
-                <i class="fa fa-road mr-2" aria-hidden="true"></i>
-                <span>{{ __("labels.state_highway") }}: <span class="fw-semibold text-break">{{ $details->application->landDeatil->dist_from_SH ?? 'N/A' }}</span></span>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="prop-badge prop-grey d-flex align-items-center p-2 rounded bg-light mb-2">
-                <i class="fa fa-calendar mr-2" aria-hidden="true"></i>
-                <span>{{ __("labels.application_receive_date") }}: <span class="fw-semibold">{{ date('d F Y', strtotime($details->application->created_at)) }}</span></span>
-            </div>
-        </div> -->
+        </div>        
 
     </div>
 
@@ -455,6 +421,9 @@ body {
                                             <option value="{{$role->forward_to}}">{{ strtoupper($role->forward_to) }}</option>
                                             @endforeach
                                             @endif
+                                            @if($details->application->allot_auth == Auth::user()->user_type)
+                                            <option value="user">Applicant</option>
+                                            @endif
                                         </select>
                                         <span id="forwardtoRoleError" class="fw-medium d-block mt-2" style="color: red;"></span>
                                     </div>
@@ -473,7 +442,10 @@ body {
                                 <button class="btn btn-primary custom-btn flex-fill application_status" data-action="{{$action}}" type="button" disabled>Esign & Submit</button>
                             </div>
                             <div class="col-md-3 col-6 mb-2 mb-md-0 d-flex justify-content-md-end justify-content-center">
-                                <button class="btn btn-primary custom-btn flex-fill application_status" data-action="{{$action}}" type="button">{{ucfirst($action)}}</button>
+                                <button class="btn btn-primary custom-btn flex-fill application_status" data-action="{{$action}}" type="button">Esign & Submit</button>
+                            </div>
+                            <div class="col-md-3 col-6 mb-2 mb-md-0 d-flex justify-content-md-end justify-content-center">
+                                <a href="{{route('application.details',[$details->status,base64_encode($details->id)])}}" class="btn btn-primary custom-btn flex-fill" data-action="back" type="button">Back</a>
                             </div>
                             {{--@if($details->application->allot_auth == Auth::user()->user_type)
                             <div class="col-md-3 col-6 mb-2 mb-md-0 d-flex justify-content-md-end justify-content-center">
@@ -500,7 +472,8 @@ body {
         let location_type ='';
         let location_id ='';
         let parent_role='';
-        let auth_user_type = "{{Auth::user()->user_type}}";         
+        let auth_user_type = "{{Auth::user()->user_type}}";      
+        let user_id = "{{$details->application->user_id}}";   
         $("#ajax-loader").show();
         switch (role) {
             case 'DM':
@@ -510,6 +483,10 @@ body {
             case 'Patwari':
                 location_type = "village_id";
                 location_id = "{{$details->application->landDetail->village_code}}";
+                break;
+            case 'user':
+                location_type = "";
+                location_id = "";
                 break;  
             case 'DA':
                 // Use auth_user_type logic inside this case
@@ -534,12 +511,12 @@ body {
         $.ajax({
             url: "{{ route('getRolewiseUser') }}",
             type: "POST",
-            data: { _token: '{{csrf_token()}}',role: role,parent_role:parent_role,location_type: location_type,location_id: location_id },
+            data: { _token: '{{csrf_token()}}',role: role,parent_role:parent_role,location_type: location_type,location_id: location_id,user_id: user_id },
             success: function(response) {                                
                 $('#forwardTo_Div').show();
                 let html = "";                
                 html += '<select class="form-select custom-dropdown" name="forward_to" id="forward_to"><option value="">Please Select</option>';
-                $.each(response.users, function(index, user) {
+                $.each(response.users, function(index, user) {                                        
                     let name = user.name.charAt(0).toUpperCase() + user.name.slice(1);
                     html += '<option value="'+user.id+'" selected>'+name+'</option>';
                 });
@@ -610,7 +587,7 @@ body {
                             closeButton: true,
                             progressBar: true 
                         });
-                        window.location.href= "{{route('home')}}";
+                        window.location.href= "{{route('user.dashboard')}}";
                         // $('#btn_div').hide();
                     }
                     console.log('Update successful:', response);                

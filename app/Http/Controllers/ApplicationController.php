@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\ApplicationDetail;
 use App\Models\Division;
 use App\Models\District;
+use App\Models\Tehsil;
+use App\Models\Village;
 use App\Models\LandDetail;
 use App\Models\LandOwnerDetail;
 use App\Models\Application;
@@ -34,8 +36,6 @@ class ApplicationController extends Controller {
 
     public function newApplication() {
         $documentTypes = MasterAttachment::where( 'applicant_display', 'yes' )->get();
-        //dd( $documentTypes );
-
         $purposes = Purpose::all();
         $rules = ApplicationRule::all();
         $districts = District::select( 'district_code', 'District_Name' )->get();
@@ -47,7 +47,7 @@ class ApplicationController extends Controller {
 
         $user = Auth::user();
         try {
-            // dd( $request->all() );
+           
             if ( $request->step == 0 ) {
                 $request->validate( [
                     'allotment_purpose' => 'required',
@@ -167,7 +167,6 @@ class ApplicationController extends Controller {
                             $organizationData[ $dbColumn ] = $path;
                         }
                     }
-
                     Organization::create( $organizationData );
                 }
 
@@ -208,8 +207,6 @@ class ApplicationController extends Controller {
                     'surrender_details' => $request->land_surrendered_detail,
                     'khasra_number' => implode( ',', $request->khsra )
                 ] );
-
-                // Insert multiple data in land owner details table with multiple khasra number
                 $village      = $request->village;
                 $applicationId = $request->application_id;
                 $applicationNumber = $application->application_number;
@@ -220,7 +217,6 @@ class ApplicationController extends Controller {
                 if ( count( $request->khsra )>0 ) {
                     foreach ( $request->khsra as $khasra ) {
                         $ownerDetails = $this->landOwnerDetail( $village, $khasra );
-
                         $landOwnerData[] = [
                             'application_id'    => $applicationId,
                             'application_number'=> $applicationNumber,
@@ -235,7 +231,6 @@ class ApplicationController extends Controller {
                     }
                     LandOwnerDetail::insert( $landOwnerData );
                 }
-
                 return response()->json( [ 'status' => true, 'message' => '', 'data' => $request->application_id ] );
 
             } elseif ( $request->step == 2 ) {
@@ -273,7 +268,6 @@ class ApplicationController extends Controller {
                 ];
 
                 LandDetail::where( 'application_id', $request->application_id )->update( $landDeatilData );
-
                 return response()->json( [ 'status' => true, 'message' => '', 'data' => $request->application_id ] );
 
             } else {
@@ -286,17 +280,13 @@ class ApplicationController extends Controller {
 
                 foreach ( $request->document_id as $fieldName => $docId ) {
                     $isField = "is_{$fieldName}";
-
-                    // build validation dynamically
                     $rules[ $isField ] = 'required|in:yes,no';
                     $rules[ $fieldName ] = "required_if:$isField,yes|mimes:pdf,jpg,png|max:2048";
                 }
                 $request->validate( $rules );
-
                 foreach ( $request->document_id as $fieldName => $docId ) {
                     if ( $request->hasFile( $fieldName ) ) {
                         $filePath = $request->file( $fieldName )->store( 'documents', 'public' );
-
                         DocUpload::create( [
                             'application_id'     => $application->id,
                             'application_number' => $application->application_number,
@@ -309,75 +299,7 @@ class ApplicationController extends Controller {
                         ] );
                     }
                 }
-
-                // dd( $request->all() );
-
-                // $request->validate( [
-                //     'application_id' => 'required|string|exists:applications,id',
-
-                //     'is_copy_khasra_map' => 'required|in:yes,no',
-                //     'copy_khasra_map' => 'required_if:is_copy_khasra_map,yes|mimes:pdf|max:2048',
-
-                //     'is_original_copy_challan' => 'required|in:yes,no',
-                //     'original_copy_challan' => 'required_if:is_original_copy_challan,yes|mimes:pdf|max:2048',
-
-                //     'is_project_cost_copy' => 'required|in:yes,no',
-                //     'project_cost_copy' => 'required_if:is_project_cost_copy,yes|mimes:pdf|max:2048',
-
-                //     'is_copies_revenue_map' => 'required|in:yes,no',
-                //     'copies_revenue_map' => 'required_if:is_copies_revenue_map,yes|mimes:pdf|max:2048',
-                // ] );
-
-                // $documents = [
-                //     'copy_khasra_map' => [
-
-                //         'file' => $request->file( 'copy_khasra_map' ),
-                //         'document_id' => $request->file( 'document_id' ),
-                // ],
-                //     'original_copy_challan' => [
-
-                //         'file' => $request->file( 'original_copy_challan' ),
-                //          'document_id' => $request->file( 'document_id' ),
-                // ],
-                //     'project_cost_copy' => [
-
-                //         'file' => $request->file( 'project_cost_copy' ),
-                //          'document_id' => $request->file( 'document_id' ),
-                // ],
-                //     'copies_revenue_map' => [
-
-                //         'file' => $request->file( 'copies_revenue_map' ),
-                //          'document_id' => $request->file( 'document_id' ),
-                // ],
-                // ];
-
-                // $application = Application::find( $request->application_id );
-
-                // foreach ( $documents as $docType => $info ) {
-                //     $filePath = null;
-
-                //     if ( $info[ 'file' ] ) {
-                //         $filePath = $info[ 'file' ]->store( 'documents', 'public' );
-                //     }
-
-                //     $docc = DocUpload::create( [
-                //         'application_id' => $application->id,
-                //         'application_number' => $application->application_number,
-                //         'document_id' => $info[ 'document_id' ],
-                //         'document_file' => $filePath,
-                //         'uploaded_by' => $user->id ?? '',
-                //         'user_type' => $user->user_type ?? '',
-                //         'sso_id' => $user->sso_id ?? '',
-                //         'is_active' => 1,
-                // ] );
-                // }
-
-                return response()->json( [
-                    'status' => true,
-                    'message' => '',
-                    'data' => $request->application_id,
-                    'step' => 3, // extra param
-                ] );
+                return response()->json( [ 'status' => true, 'message' => '', 'data' => $request->application_id, 'step' => 3 ] );
             }
 
         } catch ( ValidationException $e ) {
@@ -394,6 +316,409 @@ class ApplicationController extends Controller {
                 'error' => $e->getMessage(),
             ], 500 );
         }
+    }
+
+    public function editApplication( $id ) {
+        $id = base64_decode( $id );
+        $documentTypes = MasterAttachment::where( 'applicant_display', 'yes' )->get();
+
+        $purposes = Purpose::all();
+        $rules = ApplicationRule::all();
+        $application = Application::find( $id );
+
+        $districts = District::select( 'district_code', 'District_Name' )->get();
+
+        $tehsils = Tehsil::where( 'District_ID', $application->applicant_district )->select( 'Block_Name', 'Block_id1' )->get();
+
+        $villages = Village::where( 'Tehsil_Code', $application->applicant_tehsil )->select( 'Village_Name', 'Village_Id' )->get();
+        $selectedKhasras = explode( ',', $application->landDetail->khasra_number );
+
+        return view( 'edit_application', compact( 'documentTypes', 'purposes', 'rules', 'districts', 'tehsils', 'villages', 'application', 'selectedKhasras' ) );
+    }
+
+    public function updateApplication( Request $request )  {
+
+        $user = Auth::user();
+        try {
+
+            DB::beginTransaction();
+            if ( $request->step == 0 ) {
+                $request->validate( [
+                    'allotment_purpose' => 'required',
+                    'land_allotment_rule' => 'required',
+                    'applicant_type' => 'required',
+                    'app_name' => 'required',
+                    'app_fname' => 'required',
+                    'address_app' => 'required',
+                    'app_mobile' => 'required|digits:10',
+                    'app_email' => 'required|email',
+                    'org_name' => 'required_if:applicant_type,orgnization',
+                    'dep_name' => 'required_if:applicant_type,department',
+                    'app_des' => 'required_if:applicant_type,orgnization|required_if:applicant_type,department',
+                    // organization validation start
+                    'land_alloted_details' => 'required_if:applicant_type,orgnization',
+                    'org_statement' => 'nullable|mimes:pdf|max:2048',
+                    'project_report' => 'required_if:applicant_type,orgnization',
+                    'project_report_file' => 'nullable|mimes:pdf|max:2048',
+                    'ins_allot_purpose' => 'nullable|mimes:pdf|max:2048',
+                    'society_benefits' => 'required_if:applicant_type,orgnization',
+                    'society_benefits_file' => 'nullable|mimes:pdf|max:2048',
+                    'prev_allot_land_file' => [
+                        'nullable',
+                        'mimes:pdf',
+                        'max:2048',
+                    ],
+                    'experience_detail' => [
+                        Rule::requiredIf( fn () => request( 'applicant_type' ) === 'orgnization' && request( 'experience' ) === 'yes' ),
+
+                    ],
+
+                    'reg_number' => [
+                        Rule::requiredIf( fn () => request( 'applicant_type' ) === 'orgnization' && request( 'registered' ) === 'yes' ),
+
+                    ],
+
+                    'reg_date' => [
+                        Rule::requiredIf( fn () => request( 'applicant_type' ) === 'orgnization' && request( 'registered' ) === 'yes' ),
+
+                    ],
+
+                    'org_reg_certificate' => [
+                        Rule::requiredIf( fn () => request( 'applicant_type' ) === 'orgnization' && request( 'registered' ) === 'yes' ),
+
+                    ],
+
+                    'org_reg_certificate_file' => [
+                        'nullable',
+                        'mimes:pdf',
+                        'max:2048',
+                    ],
+
+                ] );
+
+                $purpose = Purpose::find( $request->allotment_purpose );
+
+                Application::where( 'id', $request->application_id )->update( [
+                    'purpose_id' => $request->allotment_purpose,
+                    'application_rule_id' => $request->land_allotment_rule,
+                    'user_id' => $user->id,
+                    'status_flag' => 't',
+                    'allot_auth' => $purpose->purpose_allotment_author ?? '',
+                    'purpose_detail' => $request->purpose_details ?? '',
+                    'user_type' => $user->user_type ?? '',
+                    'sso_id' => $user->sso_id ?? '',
+                    'applicant_type' => $request->applicant_type,
+                    'org_name' => $request->org_name ?? null,
+                    'dep_name' => $request->dep_name ?? null,
+                    'applicant_designation' => $request->app_des ?? null,
+                    'applicant_name' => $request->app_name ?? null,
+                    'applicant_fname' => $request->app_fname ?? null,
+                    'applicant_add1' => $request->address_app ?? null,
+                    'applicant_mnumber' => $request->app_mobile ?? null,
+                    'applicant_email' => $request->app_email ?? null,
+
+                ] );
+
+                if ( $request->applicant_type == 'orgnization' ) {
+                    $organizationData = [];
+
+                    $organizationData[ 'user_id' ] = $user->id;
+                    $organizationData[ 'user_type' ] = $user->user_type ?? '';
+                    $organizationData[ 'sso_id' ] = $user->sso_id ?? '';
+                    $organizationData[ 'land_alloted_details' ] = $request->land_alloted_details;
+                    $organizationData[ 'project_report' ] = $request->project_report;
+                    $organizationData[ 'society_benefits' ] = $request->society_benefits;
+                    $organizationData[ 'land_used' ] = $request->land_used;
+                    $organizationData[ 'experience' ] = $request->experience;
+                    $organizationData[ 'experience_detail' ] = $request->experience_detail;
+                    $organizationData[ 'registered' ] = $request->registered;
+                    $organizationData[ 'reg_number' ] = $request->reg_number;
+                    $organizationData[ 'reg_date' ] = $request->reg_date;
+                    $organizationData[ 'org_reg_certificate' ] = $request->org_reg_certificate;
+                    $fileFields = [
+                        'org_statement'           => 'org_statement',
+                        'project_report_file'     => 'project_report_file',
+                        'ins_allot_purpose'       => 'ins_allot_purpose',
+                        'society_benefits_file'   => 'society_benefits_file',
+                        'prev_allot_land_file'    => 'prev_allot_land_file',
+                        'org_reg_certificate_file'=> 'org_reg_certificate_file',
+                    ];
+
+                    foreach ( $fileFields as $inputName => $dbColumn ) {
+
+                        if ( $request->hasFile( $inputName ) ) {
+                            $file = $request->file( $inputName );
+
+                            $filename = Str::uuid()->toString().'_'.$file->getClientOriginalName();
+                            $path = $file->storeAs( 'documents', $filename, 'public' );
+                            $organizationData[ $dbColumn ] = $filename;
+                        }
+                    }
+
+                    Organization::where( 'application_id', $request->application_id )->update( $organizationData );
+                }
+                DB::commit();
+                return response()->json( [ 'status' => true, 'message' => '', 'data' => $request->application_id ] );
+
+            } elseif ( $request->step == 1 ) {
+
+                $request->validate( [
+                    'application_id' => 'required|string|exists:applications,id',
+                    'district' => 'required',
+                    'tehsil' => 'required',
+                    'village' => 'required',
+                    'khsra'    => 'required|array|min:1',
+                    'khsra.*'  => 'required|string|min:1',
+                    'type_of_land' => 'required',
+                    'proposed_area' => 'required|numeric|min:0',
+                    'land_surrendered' => 'required|in:yes,no',
+                    'land_surrendered_detail' => 'required_if:land_surrendered,yes',
+                ] );
+
+                $divID = District::where( 'district_code', $request->district )->value( 'div_id' );
+                $application = Application::find( $request->application_id );
+                $application->applicant_district = $request->district;
+                $application->applicant_tehsil = $request->tehsil;
+                $application->applicant_division = $divID;
+                $application->save();
+
+                LandDetail::where( 'application_id', $request->application_id )->update( [
+                    'proposed_land_area' => $request->proposed_area,
+                    'village_code' => $request->village,
+                    'land_type' => $request->type_of_land,
+                    'user_id' => $user->id,
+                    'user_type' => $user->user_type ?? '',
+                    'sso_id' => $user->sso_id ?? '',
+                    'is_land_surrendered' => $request->land_surrendered,
+                    'surrender_details' => $request->land_surrendered_detail,
+                    'khasra_number' => implode( ',', $request->khsra )
+                ] );
+
+                // Insert multiple data in land owner details table with multiple khasra number
+                $village      = $request->village;
+                $applicationId = $request->application_id;
+                $applicationNumber = $application->application_number;
+                $userId       = $user->id;
+                $userType     = $user->user_type ?? '';
+                $ssoId        = $user->sso_id ?? '';
+                $landOwnerData = [];
+                if ( count( $request->khsra )> 0 ) {
+                    LandOwnerDetail::where( 'application_id', $applicationId )->delete();
+                    foreach ( $request->khsra as $khasra ) {
+                        $ownerDetails = $this->landOwnerDetail( $village, $khasra );
+
+                        $landOwnerData[] = [
+                            'application_id'    => $applicationId,
+                            'application_number'=> $applicationNumber,
+                            'user_id'           => $userId,
+                            'user_type'         => $userType,
+                            'sso_id'            => $ssoId,
+                            'owner_name'        => $ownerDetails[ 'name' ] ?? '',
+                            'owner_fname'       => $ownerDetails[ 'fathername' ] ?? '',
+                            'owner_add1'        => $ownerDetails[ 'Address' ] ?? '',
+                            'khasra_number'     => $ownerDetails[ 'khasra' ] ?? '',
+                        ];
+                    }
+                    LandOwnerDetail::insert( $landOwnerData );
+                }
+
+                DB::commit();
+                return response()->json( [ 'status' => true, 'message' => '', 'data' => $request->application_id ] );
+
+            } elseif ( $request->step == 2 ) {
+
+                $request->validate( [
+                    'application_id' => 'required|string|exists:applications,id',
+                    'khatadari' => 'required|in:yes,no',
+                    'khatadariDetails' => 'required_if:khatadari,yes',
+                    'act_1894' => 'required|in:yes,no',
+                    'landacc' => 'required_if:act_1894,yes',
+                    'irrigation_means' => 'required|in:yes,no',
+                    'irrigationDetails' => 'required_if:irrigation_means,yes',
+                    'railway_distance' => 'required|numeric|min:0',
+                    'national_highway_distance' => 'required|numeric|min:0',
+                    'state_highway' => 'required|numeric|min:0',
+                    'distance_from_town_city' => 'required|numeric|min:0',
+                    'project_cost' => 'required|numeric|min:0',
+                    'relevant_info' => 'required',
+
+                ] );
+
+                $landDeatilData = [
+                    'khatedari_proceeding' => $request->khatadari,
+                    'khatedari_proceeding_details' => $request->khatadariDetails,
+                    'under_acquisition_act_1894' => $request->act_1894,
+                    'under_acquisition_act_1894_detail' =>$request->landacc,
+                    'irrigation_land' => $request->irrigation_means,
+                    'project_cost' => $request->project_cost,
+                    'irrigation_detail' => $request->irrigationDetails,
+                    'dist_from_RL' => $request->railway_distance,
+                    'dist_from_NH' => $request->national_highway_distance,
+                    'dist_from_SH' => $request->state_highway,
+                    'dist_from_City' => $request->distance_from_town_city,
+                    'other_details' => $request->relevant_info,
+                ];
+
+                LandDetail::where( 'application_id', $request->application_id )->update( $landDeatilData );
+                DB::commit();
+                return response()->json( [ 'status' => true, 'message' => '', 'data' => $request->application_id ] );
+
+            } else {
+                // dd( $request->all() );
+                $request->validate( [
+                    'application_id' => 'required|exists:applications,id',
+                ] );
+
+                $application = Application::findOrFail( $request->application_id );
+
+                foreach ( $request->document_id as $fieldName => $docId ) {
+                    $isField = "is_{$fieldName}";
+
+                    // build validation dynamically
+                    $rules[ $isField ] = 'required|in:yes,no';
+                    $rules[ $fieldName ] = 'nullable|mimes:pdf,jpg,png|max:2048';
+                }
+                $request->validate( $rules );
+
+                foreach ( $request->document_id as $fieldName => $docId ) {
+                    if ( $request->hasFile( $fieldName ) ) {
+
+                        // Store new file
+                        $filePath = $request->file( $fieldName )->store( 'documents', 'public' );
+
+                        // Find if record already exists
+                        $docUpload = DocUpload::where( 'application_id', $application->id )
+                        ->where( 'document_id', $docId )
+                        ->first();
+
+                        if ( $docUpload ) {
+                            // Optional: delete old file
+                            if ( $docUpload->document_file && Storage::disk( 'public' )->exists( $docUpload->getRawOriginal( 'document_file' ) ) ) {
+                                Storage::disk( 'public' )->delete( $docUpload->getRawOriginal( 'document_file' ) );
+                            }
+
+                            // Update record
+                            $docUpload->update( [
+                                'document_file' => $filePath,
+                                'uploaded_by'   => $user->id ?? '',
+                                'user_type'     => $user->user_type ?? '',
+                                'sso_id'        => $user->sso_id ?? '',
+                                'is_active'     => 1,
+                            ] );
+                        } else {
+                            // Create new record if not found
+                            DocUpload::create( [
+                                'application_id'     => $application->id,
+                                'application_number' => $application->application_number,
+                                'document_id'        => $docId,
+                                'document_file'      => $filePath,
+                                'uploaded_by'        => $user->id ?? '',
+                                'user_type'          => $user->user_type ?? '',
+                                'sso_id'             => $user->sso_id ?? '',
+                                'is_active'          => 1,
+                            ] );
+                        }
+                    }
+                }
+
+                DB::commit();
+                return response()->json( [
+                    'status' => true,
+                    'message' => '',
+                    'data' => $request->application_id,
+                    'step' => 3, // extra param
+                ] );
+            }
+
+        } catch ( ValidationException $e ) {
+            DB::rollback();
+            return response()->json( [
+                'status' => false,
+                'message' => 'Validation Error',
+                'errors' => $e->errors(),
+            ], 422 );
+        } catch ( \Exception $e ) {
+            Log::error( 'Error: ' . $e->getMessage() );
+            return response()->json( [
+                'status' => false,
+                'message' => 'Something went wrong. Please try again.',
+                'error' => $e->getMessage(),
+            ], 500 );
+        }
+    }
+
+    public function previewApplication( $id ) {
+        $applicationData = Application::with( [ 'purpose', 'rule', 'landOwners', 'ApplicationDocs', 'district', 'tehsil', 'landDetail', 'organizationDtls' ] )->where( 'id', $id )->firstOrFail();
+        return response()->json( [ 'status' => true, 'data' => $applicationData ] );
+
+    }
+
+    public function finalSubmit( $applicationNumber ) {
+        $application = Application::where( 'id', $applicationNumber )->first();
+        $user = Auth::user();
+
+        if ( !$application ) {
+            return response()->json( [
+                'status' => false,
+                'message' => 'Application not found.',
+            ], 404 );
+        }
+        $purpose = Purpose::find( $application->purpose_id );
+        $allotingAuthor = null;
+
+        if ( $purpose ) {
+            switch ( $purpose->purpose_allotment_author ) {
+                case 'DM':
+                $allotingAuthor = User::where( 'district_id', $application->applicant_district )
+                ->where( 'user_type', 'DM' )
+                ->first();
+                break;
+
+                case 'SDO':
+                $allotingAuthor = User::where( 'block', $application->applicant_tehsil )
+                ->where( 'user_type', 'SDO' )
+                ->first();
+                break;
+
+                case 'DC':
+                $allotingAuthor = User::where( 'division_id', $application->applicant_division )
+                ->where( 'user_type', 'DC' )
+                ->first();
+                break;
+
+                default:
+                $allotingAuthor = User::where( 'district_id', $application->applicant_district )->first();
+            }
+        }
+
+        $allotingAuthorId = $allotingAuthor ? $allotingAuthor->id : null;
+        $allotingAuthorname = $allotingAuthor ? $allotingAuthor->user_type : null;
+
+        $application->update( [
+            'status_flag' => 'p',
+            'last_forward_to_id' => $allotingAuthorId,
+        ] );
+
+        ApplicationTransaction::create( [
+            'application_id' => $application->id,
+            'application_number' => $application->application_number ?? '',
+            'forward_to_id' => $allotingAuthorId,
+            'forward_to_user_type' => $allotingAuthor->user_type ?? '',
+            'forward_to_sso' => $allotingAuthor->sso_id ?? '',
+            'forward_from_id' => $user->id ?? '',
+            'forward_from_user_type' => $user->user_type ?? '',
+            'forward_from_sso' => $user->sso_id ?? '',
+            'status' => 'pending',
+        ] );
+
+        return redirect()->route( 'user.dashboard' )->with( 'success', 'Application has been sent to ' . $allotingAuthorname . ' successfully.' );
+
+        // return response()->json( [
+        //     'status' => true,
+        //     'message' => $request->application_no_doc . ' saved successfully',
+        //     'authority' => $allotingAuthorname . ' send successfully',
+        // ] );
+
     }
 
     public function saveLandSelection( Request $request ) {
@@ -753,140 +1078,6 @@ class ApplicationController extends Controller {
                 'message' => 'Invalid action provided.',
             ], 400 );
         }
-    }
-
-    public function finalSubmit( Request $request ) {
-        try {
-
-            $application = Application::where( 'application_number', $request->application_no_doc )->first();
-
-            $user = Auth::user();
-
-            if ( !$application ) {
-                return response()->json( [
-                    'status' => false,
-                    'message' => 'Application not found.',
-                ], 404 );
-            }
-
-            $purpose = Purpose::find( $application->purpose_id );
-            $allotingAuthor = null;
-
-            if ( $purpose ) {
-                switch ( $purpose->purpose_allotment_author ) {
-                    case 'DM':
-                    $allotingAuthor = User::where( 'district_id', $application->applicant_district )
-                    ->where( 'user_type', 'DM' )
-                    ->first();
-                    break;
-
-                    case 'SDO':
-                    $allotingAuthor = User::where( 'block', $application->applicant_tehsil )
-                    ->where( 'user_type', 'SDO' )
-                    ->first();
-                    break;
-
-                    case 'DC':
-                    $allotingAuthor = User::where( 'division_id', $application->applicant_division )
-                    ->where( 'user_type', 'DC' )
-                    ->first();
-                    break;
-
-                    default:
-                    $allotingAuthor = User::where( 'district_id', $application->applicant_district )->first();
-                }
-            }
-
-            $allotingAuthorId = $allotingAuthor ? $allotingAuthor->id : null;
-            $allotingAuthorname = $allotingAuthor ? $allotingAuthor->user_type : null;
-
-            $application->update( [
-                'status_flag' => 'p',
-                'last_forward_to_id' => $allotingAuthorId,
-            ] );
-
-            ApplicationTransaction::create( [
-                'application_id' => $application->id,
-                'application_number' => $application->application_number ?? '',
-                'forward_to_id' => $allotingAuthorId,
-                'forward_to_user_type' => $allotingAuthor->user_type ?? '',
-                'forward_to_sso' => $allotingAuthor->sso_id ?? '',
-                'forward_from_id' => $user->id ?? '',
-                'forward_from_user_type' => $user->user_type ?? '',
-                'forward_from_sso' => $user->sso_id ?? '',
-                'status' => 'pending',
-            ] );
-
-            return response()->json( [
-                'status' => true,
-                'message' => $request->application_no_doc . ' saved successfully',
-                'authority' => $allotingAuthorname . ' send successfully',
-            ] );
-        } catch ( ValidationException $e ) {
-            return response()->json( [
-                'status' => false,
-                'message' => 'Validation Error',
-                'errors' => $e->errors(),
-            ], 422 );
-        } catch ( \Exception $e ) {
-            Log::error( 'Error saving documents: ' . $e->getMessage() );
-            return response()->json( [
-                'status' => false,
-                'message' => 'Something went wrong. Please try again.',
-                'error' => $e->getMessage(),
-            ], 500 );
-        }
-    }
-
-    public function saveSansthaDetails( Request $request ) {
-
-        $request->validate( [
-            'district' => 'required|exists:master_district,district_code',
-            'tehsil' => 'required|exists:master_tehsil,Block_id1',
-            'village' => 'required|exists:master_village,Village_Id',
-            'khsra' => 'required|array',
-            'type_of_land' => 'required|string|max:500',
-            'proposed_area' => 'required|numeric',
-            'land_surrendered' => 'required|string|max:500',
-            'allotment_purpose' => 'required',
-            'land_allot_rule' => 'required',
-
-            'org_name' => 'nullable|string|max:255',
-            'dep_name' => 'nullable|string|max:255',
-            'app_des' => 'nullable|string|max:255',
-            'app_name' => 'nullable|string|max:255',
-            'app_fname' => 'nullable|string|max:255',
-            'address_app' => 'nullable|string|max:500',
-            'app_mobile' => 'nullable|string|max:15',
-            'app_email' => 'nullable|string|max:255|email',
-        ] );
-
-        $application = Application::where( 'application_number', $request->application_no_sanstha )->firstOrFail();
-
-        $data = [
-            'application_id' => $application->id,
-
-            'previous_land_allocation_details' => $request->input( 'land_alloted_details', null ),
-            'organisation_details' => $request->input( 'org_reg_certificate', null ),
-            'organisation_last_three_years_profit_loss_statement_document_id' => $request->input( 'org_statement', null ),
-            'organisation_project_report_description' => $request->input( 'org_project_report', null ),
-            // '' => $request->input( 'ins_allot_purpose', null ),
-            // '' => $request->input( 'society_benefits', null ),
-            'whether_land_use_type_needed_changed_flag' => $request->input( 'land_used' ) === 'yes' ? 1 : 0,
-            //'' => $request->experience,
-            //'' => $request->registered,
-            'organisation_registration_certificate_number' => $request->input( 'reg_number', null ),
-            //'' => $request->input( 'reg_date', null ),
-
-        ];
-
-        $landDetail = Sanstha::create( $data );
-
-        return response()->json( [
-            'status' => true,
-            'message' => 'Sanstha details saved successfully',
-            'data' => $landDetail // Return created model data if needed
-        ] );
     }
 
     public function showApplicationPreview( Request $request, $id ) {

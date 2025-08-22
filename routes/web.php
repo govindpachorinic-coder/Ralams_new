@@ -3,8 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ApplicantController;
 use App\Http\Controllers\LandAllocationTempController;
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ApplicationDetailController;
 use App\Http\Controllers\ApplicationController;
@@ -39,7 +39,7 @@ Route::get('/', function () {
 // Route::post('/applicant_form', [ApplicantController::class, 'store'])->name('applicant.store');
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/home', [AuthController::class, 'home'])->name('home');
+    //Route::get('/home', [AuthController::class, 'home'])->name('home');
     Route::get('/get-all-applications/{status}', [ApplicantController::class, 'getAllApplications'])->name('get.all.application');
     Route::get('/application-details/{status}/{id}', [ApplicantController::class, 'getApplicationDetails'])->name('application.details');
     Route::get('/page/{id}', [ApplicantController::class, 'getComments'])->name('application.comments');
@@ -65,8 +65,19 @@ Route::middleware(['auth'])->group(function () {
     Route::get('new-application', [ApplicationController::class, 'newApplication'])->name('new.application');
 Route::post('/save-application', [ApplicationController::class, 'saveApplication'])->name('application.store');
 
+Route::get('/application/preview/{application_no}', [ApplicationController::class, 'previewApplication'])->name('application.preview');
+Route::get('applionview/{id}', [ApplicantController::class, 'viewApplication'])->name('application.view');
+Route::get('/application/final-submit/{application_no}', [ApplicationController::class, 'finalSubmit'])->name('application.finalsubmit');
+
+
+
+Route::get('/edit-application/{id}', [ApplicationController::class, 'editApplication'])->name('edit.application');
+    Route::post('/update-application', [ApplicationController::class, 'updateApplication'])->name('application.update');
+
 
 });
+
+
 
 
 
@@ -74,7 +85,10 @@ Route::post('/save-application', [ApplicationController::class, 'saveApplication
 Route::get('/password/reset-direct', [ResetPasswordController::class, 'showResetForm'])->name('password.reset.direct');
 
 Route::post('/password/reset-direct', [ResetPasswordController::class, 'reset'])->name('password.reset.direct.post');
+
 Route::post('/password/resetpassword-direct', [ResetPasswordController::class, 'resetpassword'])->name('password.resetpassword.direct.post');
+
+
 
 
 
@@ -130,7 +144,6 @@ Route::get('/', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('login/send-otp', [AuthController::class, 'sendOtp'])->name('login.sendotp');
 Route::post('login/verify', [AuthController::class, 'verifyOtp'])->name('login.verify');
 Route::post('loginsubmit', [AuthController::class, 'submoitlogin'])->name('login.submit');
-
 
 
 

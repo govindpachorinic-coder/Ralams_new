@@ -1,5 +1,7 @@
 @extends('layouts.front_layout')
 
+<?php // die('sdsdsdsddd');  ?>
+
 @section('title', __('labels.project_short_name'))
 @section('pagetitle', __('labels.dashboard'))
 
@@ -156,29 +158,27 @@
     }
 
     .MainBox:nth-child(1) div {
-        border: 2px solid #8f34cf;
-    }
-
-    .MainBox:nth-child(2) div {
         border: 2px solid #F39436;
     }
 
-    .MainBox:nth-child(3) div {
+    .MainBox:nth-child(2) div {
         border: 2px solid #038bec;
     }
 
+    .MainBox:nth-child(3) div {
+        border: 2px solid #5CB85C;/*8f34cf*/
+    }
+
     .MainBox:nth-child(4) div {
-        border: 2px solid #f53986;
+        border: 2px solid #777777;
     }
 
     .MainBox:nth-child(5) div {
-        border: 0px solid #fff;
-        /*border: 2px solid #019694;*/
+        border: 2px solid #DC3545;
     }
 
     .MainBox:nth-child(6) div {
-        border: 2px solid #bfc027;
-        /*border: 2px solid #019694;*/
+        border: 2px solid #134C67;
     }
 
     .serviceBox:hover {
@@ -273,6 +273,33 @@
         color:rgb(220, 53, 69);
     }
 
+
+    .serviceBox.sec:before,
+    .serviceBox.sec:after {
+        background: rgb(178, 182, 167);
+    }
+
+    .serviceBox.sec .service-icon {
+        background: rgb(178, 182, 167);
+    }
+
+    .serviceBox.sec .title {
+        color:rgb(178, 182, 167);
+    }
+
+    .serviceBox.primary:before,
+    .serviceBox.primary:after {
+        background: rgb(19,76,103);
+    }
+
+    .serviceBox.primary .service-icon {
+        background: rgb(19,76,103);
+    }
+
+    .serviceBox.primary .title {
+        color:rgb(19,76,103);
+    }
+
     .serviceBox.purple:before,
     .serviceBox.purple:after {
         background: rgb(240, 173, 78);
@@ -352,103 +379,112 @@
 @section('content')
     <div class="wrapper">
         <main>
-        <div class="my-1" id="b-homedb">
-            <div class="container mt-5">
-                <div class="container mt-5">
-                    <div class="row g-3">
-                        <!-- नया आवेदन -->
-                        <div class="col-md-4 col-sm-6 col-12 MainBox">
-                            <a href="{{ route('new.application') }}" title="">
-                                <div class="serviceBox purple">
-                                    <div class="service-icon pt-3">
-                                        <span><i class="fa fa-clock-o" aria-hidden="true"></i></span>
-                                    </div>
-                                    <h3 class="title">{{ __('labels.new_application') }}</h3>
-                                </div>
-                            </a>
-                        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-12 col-sm-12">
+                    <div class="accordion" id="accordionExample">
+                        <div class="accordion-item" id="DivPersonalDetails" runat="server" visible="false">
+                            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <div class="col-12 col-sm-12">
+                                        <div class="table-responsive">
+                                            <section class="card-container" style="margin-top:50px;">
+                                                <!-- नया आवेदन -->
+                                                <div class="col-md-4 col-sm-6 col-12 MainBox">
+                                                    <a href="{{ route('new.application') }}" title="">
+                                                        <div class="serviceBox purple">
+                                                            <div class="service-icon pt-3">
+                                                                <span><i class="fa fa-user" aria-hidden="true"></i></i></span>
+                                                            </div>
+                                                            <h3 class="title">{{ __('labels.new_application') }}</h3>
+                                                        </div>
+                                                    </a>
+                                                </div>
 
-                        <!-- लंबित आवेदन -->
-                        <div class="col-md-4 col-sm-6 col-12 MainBox">
-                            <a href="{{ route('user.get_application', ['type' => 'pending']) }}" title="">
-                                <div class="serviceBox orange">
-                                    <div class="service-icon pt-3">
-                                        <span><i class="fa fa-spinner" aria-hidden="true"></i></span>
-                                    </div>
-                                    <h3 class="title">{{ __('labels.pending_application') }}</h3>                                                    
-                                    <p class="description">
-                                        <asp:Label ID="LblMotions" runat="server">{{ $counts->pendingCount ?? 0 }}</asp:Label>
-                                    </p>
-                                </div>
-                            </a>
-                        </div>
-                        <!-- मेरा नया कार्ड -->
-                        <div class="col-md-4 col-sm-6 col-12 MainBox">
-                            <a href="{{ route('user.get_application', ['type' => 'processing']) }}" title="">
-                                <div class="serviceBox blue">
-                                    <div class="service-icon pt-3">
-                                        <span><i class="fa fa-check" aria-hidden="true"></i></span>
-                                    </div>
-                                    <h3 class="title">{{ __('labels.processing_application') }}</h3>                                                    
-                                    <p class="description">
-                                        <asp:Label ID="LblBills" runat="server">{{ $counts->processingCount ?? 0 }}</asp:Label>
-                                    </p>
-                                </div>
-                            </a>
-                        </div>
+                                                <!-- लंबित आवेदन -->
+                                                <div class="col-md-4 col-sm-6 col-12 MainBox">
+                                                    <a href="{{ route('user.get_application', ['type' => 'pending']) }}" title="">
+                                                        <div class="serviceBox orange">
+                                                            <div class="service-icon pt-3">
+                                                                <span><i class="fa fa-spinner" aria-hidden="true"></i></span>
+                                                            </div>
+                                                            <h3 class="title">{{ __('labels.pending_application') }}</h3>                                                    
+                                                            <p class="description">
+                                                                <asp:Label ID="LblMotions" runat="server">{{ $counts->pendingCount ?? 0 }}</asp:Label>
+                                                            </p>
+                                                        </div>
+                                                    </a>
+                                                </div>
+                                                <!-- मेरा नया कार्ड -->
+                                                <div class="col-md-4 col-sm-6 col-12 MainBox">
+                                                    <a href="{{ route('user.get_application', ['type' => 'processing']) }}" title="">
+                                                        <div class="serviceBox blue">
+                                                            <div class="service-icon pt-3">
+                                                                <span><i class="fa fa-tasks" aria-hidden="true"></i></span>
+                                                            </div>
+                                                            <h3 class="title">{{ __('labels.processing_application') }}</h3>                                                    
+                                                            <p class="description">
+                                                                <asp:Label ID="LblBills" runat="server">{{ $counts->processingCount ?? 0 }}</asp:Label>
+                                                            </p>
+                                                        </div>
+                                                    </a>
+                                                </div>
 
-                        <!-- संशोधन के लिए आवेदन -->
-                        <div class="col-md-4 col-sm-6 col-12 MainBox">
-                            <a href="{{ route('user.get_application', ['type' => 'error']) }}" title="">
-                                <div class="serviceBox pink">
-                                    <div class="service-icon pt-3">
-                                        <span><i class="fa fa-ban" aria-hidden="true"></i></span>
-                                    </div>
-                                    <h3 class="title">{{ __('labels.error_application') }}</h3>                                                    
-                                    <p class="description">
-                                        <asp:Label ID="LblHouseSittings" runat="server">{{ $counts->errorCount ?? 0 }}</asp:Label>
-                                    </p>
-                                </div>
-                            </a>
-                        </div>
+                                                <!-- संशोधन के लिए आवेदन -->
+                                                <div class="col-md-4 col-sm-6 col-12 MainBox">
+                                                    <a href="{{ route('user.get_application', ['type' => 'error']) }}" title="">
+                                                        <div class="serviceBox sec">
+                                                            <div class="service-icon pt-3">
+                                                                <span><i class="fa fa-pencil" aria-hidden="true"></i></span>
+                                                            </div>
+                                                            <h3 class="title">{{ __('labels.error_application') }}</h3>                                                    
+                                                            <p class="description">
+                                                                <asp:Label ID="LblHouseSittings" runat="server">{{ $counts->errorCount ?? 0 }}</asp:Label>
+                                                            </p>
+                                                        </div>
+                                                    </a>
+                                                </div>
 
-                        <!-- अस्वीकार आवेदन -->
-                        <div class="col-md-4 col-sm-6 col-12 MainBox">
-                            <a href="{{ route('user.get_application', ['type' => 'reject']) }}" title="">
-                                <div class="serviceBox pink">
-                                    <div class="service-icon pt-3">
-                                        <span><i class="fa fa-ban" aria-hidden="true"></i></span>
-                                    </div>
-                                    <h3 class="title">{{ __('labels.reject_application') }}</h3>                                                    
-                                    <p class="description">
-                                        <asp:Label ID="LblHouseSittings" runat="server">{{ $counts->rejectCount ?? 0 }}</asp:Label>
-                                    </p>
-                                </div>
-                            </a>
-                        </div>
+                                                <!-- अस्वीकार आवेदन -->
+                                                <div class="col-md-4 col-sm-6 col-12 MainBox">
+                                                    <a href="{{ route('user.get_application', ['type' => 'reject']) }}" title="">
+                                                        <div class="serviceBox pink">
+                                                            <div class="service-icon pt-3">
+                                                                <span><i class="fa fa-ban" aria-hidden="true"></i></span>
+                                                            </div>
+                                                            <h3 class="title">{{ __('labels.reject_application') }}</h3>                                                    
+                                                            <p class="description">
+                                                                <asp:Label ID="LblHouseSittings" runat="server">{{ $counts->rejectCount ?? 0 }}</asp:Label>
+                                                            </p>
+                                                        </div>
+                                                    </a>
+                                                </div>
 
-                        <!-- पूर्ण आवेदन -->
-                        <div class="col-md-4 col-sm-6 col-12 MainBox">
-                            <a href="{{ route('user.get_application', ['type' => 'complete']) }}" title="">
-                                <div class="serviceBox pink">
-                                    <div class="service-icon pt-3">
-                                        <span><i class="fa fa-ban" aria-hidden="true"></i></span>
+                                                <!-- पूर्ण आवेदन -->
+                                                <div class="col-md-4 col-sm-6 col-12 MainBox">
+                                                    <a href="{{ route('user.get_application', ['type' => 'complete']) }}" title="">
+                                                        <div class="serviceBox primary">
+                                                            <div class="service-icon pt-3">
+                                                                <span><i class="fa fa-check" aria-hidden="true"></i></span>
+                                                            </div>
+                                                            <h3 class="title">{{ __('labels.completed_application') }}</h3>                                                    
+                                                            <p class="description">
+                                                                <asp:Label ID="LblHouseSittings" runat="server">{{ $counts->completedCount ?? 0 }}</asp:Label>
+                                                            </p>
+                                                        </div>
+                                                    </a>
+                                                </div>
+                                           </section>
+                                        </div>
                                     </div>
-                                    <h3 class="title">{{ __('labels.completed_application') }}</h3>                                                    
-                                    <p class="description">
-                                        <asp:Label ID="LblHouseSittings" runat="server">{{ $counts->completedCount ?? 0 }}</asp:Label>
-                                    </p>
                                 </div>
-                            </a>
+                            </div>
                         </div>
                     </div>
                 </div>
-
-
-
-                
             </div>
         </div>
-        </main>
-        </div>   
+
+    </main>
+</div>
 @endsection

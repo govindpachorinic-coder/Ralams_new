@@ -31,7 +31,6 @@ class RegisterController extends Controller
         return response()->json(['status' => 'otp_sent','otp' => $otp]);
     }
 
-
     public function verifyOtp(Request $request)
     {
         if ($request->otp == session('register_otp')) {

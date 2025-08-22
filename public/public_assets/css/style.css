@@ -9,8 +9,8 @@
     }
 
 .card-header {
-            background: linear-gradient(90deg, #5e2ced, #7f5ef7);
-            color: white;
+            /* background: linear-gradient(90deg, #5e2ced, #7f5ef7); */
+            color: #000;
             font-size: 1.2rem;
             font-weight: bold;
             text-align: center;
@@ -75,7 +75,7 @@
 /* progress-bar style */
 
 /*#form, #land_selection_form, #land_detail_form, #doc_upload_form{
-/*text-align: center;*/
+/*text-align: center;
     position: relative;
     margin-top: 20px
 }*/
@@ -100,6 +100,18 @@
 }
 
  .previous-step, .next-step, .preview-step {
+    width: 180px;
+    font-weight: 20px;
+    color: white;
+    border: 0 none;
+    border-radius: 10px;
+    cursor: pointer;
+    padding: 15px 5px;
+    margin: 10px 5px 10px 0px;
+    float: center;
+}
+
+.application_preview {
     width: 180px;
     font-weight: 20px;
     color: white;

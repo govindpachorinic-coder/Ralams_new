@@ -42,6 +42,10 @@ class DocUpload extends Model {
         return $this->belongsTo(User::class,'uploaded_by');
     }
 
+     public function document() {
+        return $this->belongsTo(MasterAttachment::class, 'document_id', 'id');
+    }
+
     /**
      * (Application relation — only if Application model exists)
      */

@@ -41,7 +41,7 @@ return [
     'institute_name' => 'Name of the applicant institution',
     'allocation_purpose' => 'Purpose of Allocation',
     'land_alloted_details' => 'Details of land allotted to the institution earlier',
-    'org_reg_certificate' => 'Registration certificate of the organization and other details',
+    'org_reg_certificate' => 'Organization other details',
     'org_statement' => 'Statement of income and expenditure of the organization for the last 3 years',
     'org_project_report' => 'Project report submitted by the organization detailing the construction cost and financial resources',
     'ins_allot_purpose' => 'Purpose of land allotment to the institution and recommendation/opinion and recognition of the concerned department',
@@ -56,7 +56,7 @@ return [
     'specification_sheet' => 'specification sheet',
     'land_acquistion' => 'Whether khatedari is subject to acquisition under the Land Acquisition Act, 1894',
     //'distance_from_town_city' => 'Distance from the municipal limit of the town/city(In Km)',
-    'distance_from_town_city' => 'Distance from municipal limits(In meter)',
+    'distance_from_town_city' => 'Distance from municipal limits(m)',
     'relevant_info' => 'Any other relevant information',
     'development_fee' => 'Development Fee',
     'premium_rate' => 'Value Payable/Rate of Premium Payable',
@@ -80,6 +80,7 @@ return [
     'khasra' => 'Khasra',
     'type_of_land' => 'Type of Land',
     'khasra_area' => 'Area of Khasra',
+    'selected_khasra' => 'Selected Khasra Description',
     'proposed_area' => 'Proposed Area(acre)',
     'irrigation_description' => 'Description of the means of irrigation',
     'attach_map_copies' => '(Attach 2 copies) of the map',
@@ -108,9 +109,9 @@ return [
     'comment' => 'Recommendation/Comment',
     'org_reg_certificate_validation' => 'Please fill Registration certificate of the organization and other details.',
     'irrigation_means' => 'Means of Irrigation',
-    'railway_distance' => 'Distance from railway line(in meter)',
-    'national_highway_distance' => 'Distance from National Highway(in meter)',
-    'state_highway' => 'Distance from State Highway(in meter)',
+    'railway_distance' => 'Distance from railway line(m)',
+    'national_highway_distance' => 'Distance from National Highway(m)',
+    'state_highway' => 'Distance from State Highway(m)',
     'development_rate' => 'Rate of development charges and price payable / rate of premium payable',
     'project_cost' => 'Project Cost',
     //'project_cost_copy' => 'Project cost (attach map and other related documents for setting up industry, tourism unit)',
@@ -157,7 +158,7 @@ return [
     'panchayat_opinion' => 'Is the opinion/recommendation of the Gram Panchayat attached or not?',
     'master_plan' => 'Has the master plan been made?',
     'land_category' => 'Category of Land',
-    'distance' => 'Distance from National/State Highway (in meter)',
+    'distance' => 'Distance from National/State Highway (m)',
     'changeReason' => 'reason for change',
     'inst_land_detail' => 'Details of the land required by the institution',
     'rev_vill' => 'Name of revenue village',
@@ -169,6 +170,8 @@ return [
     'fat_hus_name' => 'Father\'s/Husband\'s Name',
     'complete_address' => 'Complete Address',
     'land_detail' => 'Particulars of Land',
+    'land_description' => 'Land Description',
+    'document_upload' => 'Document Upload',
     'city_name' => 'Name of Town/City and Tehsil',
     'area_khasra' => 'Khasra No. and Area of Each Khasra',
     'jamabandi_copy' => 'Upload Two Certified Copies of Each Latest Jamabandi',
@@ -254,6 +257,9 @@ return [
     'pending_application' => 'Pending Application',
     'processing_application' => 'Processing Application',
     'new_application'=> 'New Application',
+    'registration_number' => 'Registration Number',
+    'upload' => 'Upload',
+    'download' => 'Download File',
 
 
 
@@ -355,7 +361,7 @@ return [
     'project_cost_copy_required' => 'Please upload project cost copy.',
     'copies_revenue_map_required' => 'Please upload revenue map copy.',
     'valid_file_required' => 'Only PDF allowed.',
-    'new_application' => 'New Application',
-    'save_next' => 'Save & Next',
+
+
 
 ];

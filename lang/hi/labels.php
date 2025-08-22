@@ -40,7 +40,7 @@ return [
     'institute_name' => 'प्रार्थी संस्था का नाम',
     'allocation_purpose' => 'आवंटन का प्रयोजन',
     'land_alloted_details' => 'संस्था को पूर्व में आवंटित भूमि का विवरण',
-    'org_reg_certificate' => 'संस्था का रजिस्ट्रेशन प्रमाण पत्र व अन्य विवरण',
+    'org_reg_certificate' => 'संस्था का अन्य विवरण',
     'org_statement' => 'संस्था का गत 3 वर्ष का आय-व्यय का विवरण',
     'org_project_report' => 'संस्था द्वार प्रस्तूत की गई परियोजना रिपोर्ट निर्माण लागत और आर्थिक संसाधनों का विवरण',
     'ins_allot_purpose' => 'संस्था को भू-आवंटन का प्रयोजन एव संबन्धित विभाग की अभिशषा/अभिमत एव मान्यता',
@@ -55,7 +55,7 @@ return [
     'specification_sheet' => 'विवरण पत्र',
     'land_acquistion' => 'क्या खातेदारी भूमि अधिग्रहण अधिनियम, 1894 के अंतर्गत अधिग्रहण के अधीन है',
     // 'distance_from_town_city' => 'कस्बे/शहर की नगरपालिका सीमा से दूरी(कि.मी. में)',
-    'distance_from_town_city' => 'नगरपालिका से दूरी(मीटर में)',
+    'distance_from_town_city' => 'नगरपालिका से दूरी(मी.)',
     'relevant_info' => 'अन्य कोई सुसंगत सूचना',
     'development_fee' => 'विकास शुल्क',
     'premium_rate' => 'देय मूल्य/देय प्रीमियम की दर',
@@ -108,9 +108,9 @@ return [
     'comment' => 'अभिशंषा/टिप्पणी',
     'org_reg_certificate_validation' => 'कृपया संगठन का पंजीकरण प्रमाणपत्र और अन्य विवरण भरें',
     'irrigation_means' => 'सिचाई के साधन',
-    'railway_distance' => 'रेलवे लाइन से दूरी(मीटर में)',
-    'national_highway_distance' => 'राष्ट्रीय राजमार्ग से दूरी(मीटर में)',
-    'state_highway' => 'राज्य राजमार्ग से दूरी(मीटर में)',
+    'railway_distance' => 'रेलवे लाइन से दूरी(मी.)',
+    'national_highway_distance' => 'राष्ट्रीय राजमार्ग से दूरी(मी.)',
+    'state_highway' => 'राज्य राजमार्ग से दूरी(मी.)',
     'development_rate' => 'विकास प्रभारों की दर एवं संदेय कीमत / संदेय प्रीमियम की दर',
     'project_cost' => 'परियोजना लागत',
     // 'project_cost_copy' => 'परियोजना लागत (उद्योग, पर्यटन इकाई स्थापित करने के लिए नक्शा एवं अन्य सम्बच्धित दस्तावेज संलग्न करें)',
@@ -156,7 +156,7 @@ return [
     'panchayat_opinion' => 'ग्राम पंचायत की राय / अभिशंषा संलग्न है या नहीं?',
     'master_plan' => 'क्या मास्टर प्लान बन चुका है?',
     'land_category' => 'भूमि की श्रेणी',
-    'distance' => 'राष्ट्रीय/राज्य राजमार्ग से दूरी (मीटर में)',
+    'distance' => 'राष्ट्रीय/राज्य राजमार्ग से दूरी (मी.)',
     'changeReason' => 'परिवर्तन का कारण',
     'inst_land_detail' => 'संस्था द्वारा चाही जा रही भूमि का विवरण',
     'rev_vill' => 'राजस्व ग्राम का नाम',
@@ -168,6 +168,8 @@ return [
     'fat_hus_name' => 'पिता/पति का नाम',
     'complete_address' => 'पूर्ण पता',
     'land_detail' => 'भूमि का विवरण',
+    'land_description' => 'भूमि विवरण',
+    'document_upload' => 'डॉक्युमेंट अपलोड',
     'city_name' => 'कस्बे/शहर और तहसील का नाम',
     'area_khasra' => 'प्रत्येक खसरा का खसरा नंबर और क्षेत्रफल',
     'jamabandi_copy' => 'प्रत्येक नवीनतम जमाबंदी की दो प्रमाणित प्रतियां अपलोड करें',
@@ -237,6 +239,8 @@ return [
     'application_transactions' => 'आवेदन लेनदेन',
     'forward_to' => 'आगे प्रेषित',
     'is_document_uploaded' => 'दस्तावेज़ अपलोड किया गया है',
+    'upload' => 'अपलोड करें',
+    'download' => 'डाउनलोड करें',
     'select_district' => '--जिला चुनें--',
     'select_tehsil' => '--तहसील चुनें--',
     'select_vill' => '--गांव चुनें--',
@@ -253,6 +257,7 @@ return [
     'processing_application' => 'प्रसंस्करण आवेदन',
     'new_application' => 'नया आवेदन',
     'forward_to_role' => 'अधिकारी को अग्रेषित करें',
+    'registration_number' => 'प्रमाण पत्र क्रमांक',
 
 
 
@@ -298,6 +303,7 @@ return [
 
 
     'allotment_purpose' => 'कृपया आवंटन उद्देश्य चुनें',
+    'selected_khasra' => 'चयनित खसरा विवरण',
 
     'purpose_details_required' => 'कृपया उद्देश्य विवरण दर्ज करें',
     'applicant_name_required' => 'कृपया आवेदक का नाम दर्ज करें',
@@ -356,6 +362,6 @@ return [
     'project_cost_copy_required' => 'कृपया परियोजना लागत की प्रति अपलोड करें',
     'copies_revenue_map_required' => 'कृपया राजस्व नक्शे की प्रति अपलोड करें',
     'valid_file_required' => 'केवल PDF फ़ाइलें मान्य हैं',
-    'new_application' => 'नया आवेदन',
-    'save_next' => 'सेव और नेक्स्ट',
+
+
 ];
