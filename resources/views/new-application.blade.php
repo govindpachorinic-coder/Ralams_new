@@ -1405,6 +1405,7 @@
             khsra: @json(__('labels.khasra_required')),
             type_of_land: @json(__('labels.land_type_required')),
             proposed_area: @json(__('labels.proposed_area_required')),
+            land_surrendered_detail: @json(__('labels.land_surrendered_detail_required')),
 
             // Step 3
             railway_distance: @json(__('labels.railway_distance_required')),
@@ -1467,6 +1468,7 @@
                 }
             });
         });
+
 
 
         function fillPreview(data) {

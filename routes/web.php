@@ -66,7 +66,7 @@ Route::middleware(['auth'])->group(function () {
 Route::post('/save-application', [ApplicationController::class, 'saveApplication'])->name('application.store');
 
 Route::get('/application/preview/{application_no}', [ApplicationController::class, 'previewApplication'])->name('application.preview');
-Route::get('applionview/{id}', [ApplicantController::class, 'viewApplication'])->name('application.view');
+Route::get('applicationview/{id}', [ApplicantController::class, 'viewApplication'])->name('application.view');
 Route::get('/application/final-submit/{application_no}', [ApplicationController::class, 'finalSubmit'])->name('application.finalsubmit');
 
 

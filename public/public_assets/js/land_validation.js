@@ -78,7 +78,8 @@ $(document).ready(function () {
             village: { required: true },
             khsra: { required: true },
             type_of_land: { required: true },
-            proposed_area: { required: true }
+            proposed_area: { required: true },
+            land_surrendered_detail: { required: true }
         },
         messages: {
             district: window.validationMessages.district,
@@ -86,7 +87,8 @@ $(document).ready(function () {
             village: window.validationMessages.village,
             khsra: window.validationMessages.khsra,
             type_of_land: window.validationMessages.type_of_land,
-            proposed_area: window.validationMessages.proposed_area
+            proposed_area: window.validationMessages.proposed_area,
+            land_surrendered_detail: window.validationMessages.land_surrendered_detail
         }
     });
 
