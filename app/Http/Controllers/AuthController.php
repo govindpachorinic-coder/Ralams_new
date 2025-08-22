@@ -67,7 +67,11 @@ class AuthController extends Controller
 
     public function showLoginForm()
     {
-        return view('auth.logins');
+        if (Auth::check()) {
+            return redirect('dashboard');
+        } else {
+            return view('auth.logins');
+        }
     }
 
     public function showLoginForms()
@@ -108,7 +112,7 @@ class AuthController extends Controller
 
             if ( in_array( Auth::user()->user_type, array( 'SDO', 'DC', 'DA','DM', 'IRA' , 'SG','TDR','ILR','BDO','Patwari' ) ) )
             {
-                return redirect()->route('home');
+                return redirect()->route('user.dashboard');
             }
             return redirect()->intended('/dashboard');
 
@@ -135,7 +139,7 @@ class AuthController extends Controller
 
         try {
             if ($type === 'districts') {
-                $data = District::select('district_code', 'District_Name')->get();
+                $data = District::select('district_code', 'District_Name')->orderBy('District_Name','ASC')->get();
 
             } elseif ($type === 'district') {
                 if (empty($value)) {
@@ -148,6 +152,7 @@ class AuthController extends Controller
                 }
 
                 $data = Tehsil::where('District_ID1', $district->District_ID1)
+                     ->orderBy('Block_Name','ASC')
                     ->select('Block_Name', 'Block_id1')
                     ->get();
 
@@ -157,6 +162,7 @@ class AuthController extends Controller
                 }
 
                 $data = Village::where('Tehsil_Code', $value)
+                    ->orderBy('Village_Name','ASC')
                     ->select('Village_Name', 'Village_Id')
                     ->get();
 

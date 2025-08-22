@@ -48,14 +48,32 @@
         <a href="#" class="nav-link"><span class="material-icons">call</span>{{ __('labels.contactus') }}</a>
     </div>
     @if (Auth::check())
-        <a href="{{ route('user.dashboard') }}" class="btn-dashboard">
-            <span class="material-icons">arrow_back</span> Go to Dashboard
-        </a>
-        <div class="user-group">
-            <span class="welcome">Welcome, {{ Auth::user()->name }}</span>
-            <a href="{{ route('logout') }}" class="logout-btn"><span class="material-icons"
-                    style="font-size:1em;vertical-align:-2px;margin-right:3px;">logout</span>Logout</a>
-        </div>
+        @if (Auth::user()->user_type == 'user')
+            <a href="{{ route('user.dashboard') }}" class="btn-dashboard">
+                <span class="material-icons">arrow_back</span> Go to Dashboard
+            </a>
+
+            <div class="user-group">
+                <span class="welcome">Welcome, {{ Auth::user()->name }}</span>
+                <a href="{{ route('logout') }}" class="logout-btn">
+                    <span class="material-icons"
+                          style="font-size:1em;vertical-align:-2px;margin-right:3px;">logout</span>
+                    Logout
+                </a>
+            </div>
+        @else
+            <a href="{{ route('user.dashboard') }}" class="btn-dashboard">
+                <span class="material-icons">arrow_back</span> Go to Dashboard
+            </a>
+            <div class="user-group">
+                <span class="welcome">Welcome, {{ Auth::user()->name }}</span>
+                <a href="{{ route('logout') }}" class="logout-btn">
+                    <span class="material-icons"
+                          style="font-size:1em;vertical-align:-2px;margin-right:3px;">logout</span>
+                    Logout
+                </a>
+            </div>
+        @endif
     @endif
 
 </nav>

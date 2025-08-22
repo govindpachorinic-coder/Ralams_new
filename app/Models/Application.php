@@ -5,9 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-
-class Application extends Model
-{
+class Application extends Model {
     use SoftDeletes;
 
     protected $table = 'applications';
@@ -45,67 +43,66 @@ class Application extends Model
         'dep_name',
     ];
 
-
     // Relationships
-    public function details()
-    {
-        return $this->hasOne(ApplicationDetail::class, 'application_id');
+
+    public function details() {
+        return $this->hasOne( ApplicationDetail::class, 'application_id' );
     }
 
-    public function rule()
-    {
-        return $this->belongsTo(ApplicationRule::class, 'application_rule_id');
+    public function rule() {
+        return $this->belongsTo( ApplicationRule::class, 'application_rule_id' );
     }
 
-    public function purpose()
-    {
-        return $this->belongsTo(Purpose::class, 'purpose_id');
+    public function district() {
+         return $this->belongsTo( District::class, 'applicant_district','district_code' );
     }
 
-    public function landDetails()
-    {
-        return $this->hasMany(LandDetail::class, 'application_id');
+    public function tehsil() {
+         return $this->belongsTo( Tehsil::class, 'applicant_tehsil','Block_id1' );
     }
 
-    public function landOwners()
-    {
-        return $this->hasMany(LandOwnerDetail::class, 'application_id');
+    public function purpose() {
+        return $this->belongsTo( Purpose::class, 'purpose_id' );
     }
 
-    public function docUploads()
-    {
-        return $this->hasMany(DocUpload::class);
+    public function landDetails() {
+        return $this->hasMany( LandDetail::class, 'application_id' );
     }
 
-    public function applicationTransactions()
-    {
-        return $this->hasMany(ApplicationTransaction::class, 'application_id');
+    public function landOwners() {
+        return $this->hasMany( LandOwnerDetail::class, 'application_id' );
     }
 
-    public function landDetail()
-    {
-        return $this->hasOne(LandDetail::class, 'application_id')->with('village');
+    public function docUploads() {
+        return $this->hasMany( DocUpload::class );
     }
 
-    public function LandOwnerDetail()
-    {
-        return $this->hasMany(LandOwnerDetail::class, 'application_id');
+    public function applicationTransactions() {
+        return $this->hasMany( ApplicationTransaction::class, 'application_id' );
     }
 
-
-    public function ApplicationDocs()
-    {
-        return $this->hasMany(DocUpload::class, 'application_id');
+    public function landDetail() {
+        return $this->hasOne( LandDetail::class, 'application_id' )->with( 'village' );
     }
 
-    public function lastForwardedTo()
-    {
-        return $this->belongsTo(User::class, 'last_forward_to_id');
+    public function LandOwnerDetail() {
+        return $this->hasMany( LandOwnerDetail::class, 'application_id' );
     }
 
-     public function latestTransaction() {
-        return $this->hasOne( ApplicationTransaction::class, 'application_id' )->latestOfMany('id');
+    public function ApplicationDocs() {
+        return $this->hasMany( DocUpload::class, 'application_id' )->with('document');
     }
 
+    public function lastForwardedTo() {
+        return $this->belongsTo( User::class, 'last_forward_to_id' );
+    }
+
+    public function latestTransaction() {
+        return $this->hasOne( ApplicationTransaction::class, 'application_id' )->latestOfMany( 'id' );
+    }
+
+    public function organizationDtls(){
+        return $this->hasOne(Organization::class, 'application_id');
+    }
 
 }

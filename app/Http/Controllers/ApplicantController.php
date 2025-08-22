@@ -161,22 +161,31 @@ class ApplicantController extends Controller
 
                 $application->last_forward_to_id = $data['forward_to'];
                 ApplicationTransaction::where('application_id', $data['application_id'])->where('forward_to_id', $data['forward_to'])->update(['status' => 'pending']);
+
+                $userType = $data['forward_to_role'];
+                $userID = $data['forward_to'];
+                $userData = User::where('id', $userID)->first();
+
                 $transactiondata = ApplicationTransaction::create([
                     'application_id' => $data['application_id'],
                     'application_number' => $application->application_number,
                     'forward_from_id' => Auth::user()->id,
+                    'forward_from_sso' => Auth::user()->sso_id,
+                    'forward_from_user_type' => Auth::user()->user_type,
                     'forward_to_id' => $data['forward_to'],
+                    'forward_to_sso' => $userData->sso_id ?? '',
+                    'forward_to_user_type' => $userType,
                     'comment' => $data['comment'],
                     'forward_file' => $filepath,
                     'status' => 'pending'
-                ]);
+                ]);            
+
                 if ($application->status == 'pending') {
-                    $application->status = 'processing';
-                    $application->save();
+                    $application->status = 'processing';                                        
                 }
-                $userType = $data['forward_to_role'];
-                $userID = $data['forward_to'];
-                $userData = User::where('id', $userID)->first();
+               
+                $application->status_flag = ($userType == 'user') ? 'e' : $application->status_flag;
+
                 $location = "";
                 if (!empty($userData)) {
                     if ($userType == 'DM') {
@@ -190,42 +199,13 @@ class ApplicantController extends Controller
                 $commentdata = ApplicationTransaction::find($transactiondata->id);
                 $message = "Application send to " . $userType . ' ' . $location;
                 log_activity('Application forwarding');
-            } elseif ($data['action'] == 'revert') {
-                $transaction = ApplicationTransaction::find($data['transaction_id']);
-                ApplicationTransaction::where('application_id', $data['application_id'])->where('forward_to_id', $this->user)->update(['status' => 'processing']);
-
-                $application->last_forward_to_id = $transaction->forward_from_id;
-                ApplicationTransaction::where('application_id', $data['application_id'])->where('forward_to_id', $transaction->forward_from_id)->update(['status' => 'pending']);
-                ApplicationTransaction::create([
-                    'application_id' => $data['application_id'],
-                    'application_number' => $application->application_number,
-                    'forward_from_id' => $this->user,
-                    'forward_to_id' => $transaction->forward_from_id,
-                    'comment' => $data['comment'],
-                    'forward_file' => $filepath,
-                    'status' => 'pending'
-                ]);
-                $userData = User::where('id', $transaction->forward_from_id)->first();
-                $location = "";
-                $userType = $userData->user_type;
-                if (!empty($userData)) {
-                    if ($userType == 'DM') {
-                        $location = $userData->district->District_Name;
-                    } elseif ($userType == 'SDO' || $userType == 'TDR') {
-                        $location = $userData->blockData->Block_Name;
-                    } elseif ($userType == 'Patwari') {
-                        $location = $userData->village->Village_Name;
-                    }
-                }
-                $message = "Application revert to " . $userType . ' ' . $location;
-                log_activity('Application Reverted');
-            } else {
-                $application->status = 'rejected';
-                $application->save();
+            } else if($data['action'] == 'cancel') {
+                $application->status = 'rejected';                
                 ApplicationTransaction::where('application_id', $data['application_id'])->update(['status' => 'rejected']);
                 $message = "Application marked as Rejected";
                 log_activity('Application Rejected');
             }
+            $application->save();
             DB::commit();
             return response()->json(['status' => true, 'message' => $message]);
         } catch (\Exception $e) {
@@ -249,11 +229,31 @@ class ApplicantController extends Controller
         }
     }
 
+
+    public function viewApplication( $id ) {
+
+        $base64id = base64_decode($id);
+
+        $details = Application::with( [ 'purpose', 'rule', 'landOwners', 'ApplicationDocs', 'district', 'tehsil', 'landDetail', 'organizationDtls' ] )->where( 'id', $base64id )->firstOrFail();
+
+        //dd($applicationData);
+        if (!empty($details)) {
+            return view('applicant_view',compact('details'));
+        } else {
+            return redirect()->route('user.dashboard')->with('error', 'Invalid Request');
+        }
+
+    }
+
     public function getRolewiseUser(Request $request)
     {
         $data = $request->all();
         try {
-            $rolewiseusers = User::where(['user_type' => $data['role'], 'parent_role' => $data['parent_role'], $data['location_type'] => $data['location_id']])->get();
+            if($data['role'] == 'user'){
+                $rolewiseusers = User::where('id', $data['user_id'])->get(); 
+            }else{
+                $rolewiseusers = User::where(['user_type' => $data['role'], 'parent_role' => $data['parent_role'], $data['location_type'] => $data['location_id']])->get();
+            }
             return response()->json(['status' => true, 'users' => $rolewiseusers]);
         } catch (\Exception $e) {
             return response()->json(['status' => false, 'message' => 'Something went wrong']);

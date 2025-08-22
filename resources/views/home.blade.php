@@ -89,15 +89,15 @@
     }
 
     .MainBox:nth-child(1) div {
-        border: 2px solid #8f34cf;
-    }
-
-    .MainBox:nth-child(2) div {
         border: 2px solid #F39436;
     }
 
-    .MainBox:nth-child(3) div {
+    .MainBox:nth-child(2) div {
         border: 2px solid #038bec;
+    }
+
+    .MainBox:nth-child(3) div {
+        border: 2px solid #5CB85C;
     }
 
     .MainBox:nth-child(4) div {
@@ -269,75 +269,72 @@
 @section('content')
 <div class="wrapper">
     <main>
-
-        <div class="card-body">
-            <div class="row">
-                <div class="col-12 col-sm-12">
-                    <div class="accordion" id="accordionExample">
-                        <div class="accordion-item" id="DivPersonalDetails" runat="server" visible="false">
-                            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                                <div class="accordion-body">
-                                    <div class="col-12 col-sm-12">
-                                        <div class="table-responsive">
-                                            <section class="card-container" style="margin-top:50px;">
-                                                <div class="col-md-4 col-sm-6 col-12 MainBox">
-                                                    <a href="{{ route('get.all.application','pending')}}" title="">
-                                                        <div class="serviceBox purple">
-                                                            <div class="service-icon pt-3">
-                                                                <span><i class="fa fa-clock-o" aria-hidden="true"></i></span>
-                                                            </div>
-                                                            <h3 class="title">{{ __('labels.total_pending')}}</h3>                                                    
-                                                            <p class="description">
-                                                                <asp:Label ID="LblQuestionNotices" runat="server">{{$pendingCount}}</asp:Label>
-                                                            </p>                                                                               
-                                                        </div>
-                                                    </a>
+<div class="card-body">
+    <div class="row">
+        <div class="col-12 col-sm-12">
+            <div class="accordion" id="accordionExample">
+                <div class="accordion-item" id="DivPersonalDetails" runat="server" visible="false">
+                    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                            <div class="col-12 col-sm-12">
+                                <div class="table-responsive">
+                                    <section class="card-container" style="margin-top:50px;">
+                                        <div class="col-md-4 col-sm-6 col-12 MainBox">
+                                            <a href="{{ route('get.all.application','pending')}}" title="">
+                                                <div class="serviceBox purple">
+                                                    <div class="service-icon pt-3">
+                                                        <span><i class="fa fa-spinner" aria-hidden="true"></i></span>
+                                                    </div>
+                                                    <h3 class="title">{{ __('labels.total_pending')}}</h3>                                                    
+                                                    <p class="description">
+                                                        <asp:Label ID="LblQuestionNotices" runat="server">{{$pendingCount}}</asp:Label>
+                                                    </p>                                                                               
                                                 </div>
-
-                                                <div class="col-md-4 col-sm-6 col-12 MainBox">
-                                                    <a href="{{ route('get.all.application','processing') }}" title="">
-                                                        <div class="serviceBox orange">
-                                                            <div class="service-icon pt-3">
-                                                                <span><i class="fa fa-spinner" aria-hidden="true"></i></span>
-                                                            </div>
-                                                            <h3 class="title">{{ __('labels.total_processing')}}</h3>                                                    
-                                                            <p class="description">
-                                                                <asp:Label ID="LblMotions" runat="server">{{$processingCount}}</asp:Label>
-                                                            </p>
-                                                        </div>
-                                                    </a>
-                                                </div>
-
-                                                <div class="col-md-4 col-sm-6 col-12 MainBox">
-                                                    <a href="{{ route('get.all.application','completed') }}" title="">
-                                                        <div class="serviceBox blue">
-                                                            <div class="service-icon pt-3">
-                                                                <span><i class="fa fa-check" aria-hidden="true"></i></span>
-                                                            </div>
-                                                            <h3 class="title">{{ __('labels.total_completed')}}</h3>                                                    
-                                                            <p class="description">
-                                                                <asp:Label ID="LblBills" runat="server">{{$completedCount}}</asp:Label>
-                                                            </p>
-                                                        </div>
-                                                    </a>
-                                                </div>
-
-                                                <div class="col-md-4 col-sm-6 col-12 MainBox">
-                                                    <a href="{{ route('get.all.application','rejected')}}" title="">
-                                                        <div class="serviceBox pink">
-                                                            <div class="service-icon pt-3">
-                                                                <span><i class="fa fa-ban" aria-hidden="true"></i></span>
-                                                            </div>
-                                                            <h3 class="title">{{ __('labels.total_rejected')}}</h3>                                                    
-                                                            <p class="description">
-                                                                <asp:Label ID="LblHouseSittings" runat="server">{{$rejectCount}}</asp:Label>
-                                                            </p>
-                                                        </div>
-                                                    </a>
-                                                </div>
-                                            </section>
+                                            </a>
                                         </div>
-                                    </div>
+
+                                        <div class="col-md-4 col-sm-6 col-12 MainBox">
+                                            <a href="{{ route('get.all.application','processing') }}" title="">
+                                                <div class="serviceBox orange">
+                                                    <div class="service-icon pt-3">
+                                                        <span><i class="fa fa-tasks" aria-hidden="true"></i></span>
+                                                    </div>
+                                                    <h3 class="title">{{ __('labels.total_processing')}}</h3>                                                    
+                                                    <p class="description">
+                                                        <asp:Label ID="LblMotions" runat="server">{{$processingCount}}</asp:Label>
+                                                    </p>
+                                                </div>
+                                            </a>
+                                        </div>
+
+                                        <div class="col-md-4 col-sm-6 col-12 MainBox">
+                                            <a href="{{ route('get.all.application','completed') }}" title="">
+                                                <div class="serviceBox blue">
+                                                    <div class="service-icon pt-3">
+                                                        <span><i class="fa fa-check" aria-hidden="true"></i></span>
+                                                    </div>
+                                                    <h3 class="title">{{ __('labels.total_completed')}}</h3>                                                    
+                                                    <p class="description">
+                                                        <asp:Label ID="LblBills" runat="server">{{$completedCount}}</asp:Label>
+                                                    </p>
+                                                </div>
+                                            </a>
+                                        </div>
+
+                                        <div class="col-md-4 col-sm-6 col-12 MainBox">
+                                            <a href="{{ route('get.all.application','rejected')}}" title="">
+                                                <div class="serviceBox pink">
+                                                    <div class="service-icon pt-3">
+                                                        <span><i class="fa fa-ban" aria-hidden="true"></i></span>
+                                                    </div>
+                                                    <h3 class="title">{{ __('labels.total_rejected')}}</h3>                                                    
+                                                    <p class="description">
+                                                        <asp:Label ID="LblHouseSittings" runat="server">{{$rejectCount}}</asp:Label>
+                                                    </p>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </section>
                                 </div>
                             </div>
                         </div>
@@ -345,10 +342,10 @@
                 </div>
             </div>
         </div>
-
-    </main>
+    </div>
 </div>
-
+</main>
+</div>
 
 <script>
     @if (session('error'))

@@ -719,24 +719,39 @@ class ApplicationDetailController extends Controller
 
     public function user_dashboard()
     {
-        try {
+       if (Auth::user()->user_type == 'user')
+        {
+            try {
 
-            $loginUserID = Auth::id();
-            $counts = Application::where('user_id', $loginUserID)
-                ->selectRaw("
-            COUNT(CASE WHEN status_flag = 't' THEN 1 END) as pendingCount,
-            COUNT(CASE WHEN status_flag = 'e' THEN 1 END) as errorCount,
-            COUNT(CASE WHEN status = 'processing' THEN 1 END) as processingCount,
-            COUNT(CASE WHEN status = 'rejected' THEN 1 END) as rejectCount,
-            COUNT(CASE WHEN status = 'completed' THEN 1 END) as completedCount")->first();
-            return view('user_dashboard', compact('counts'));
-        } catch (\Exception $e) {
-            Log::error('Error: ' . $e->getMessage());
-            return response()->json([
-                'status' => false,
-                'message' => 'Something went wrong. Please try again.',
-                'error' => $e->getMessage(),
-            ], 500);
+                $loginUserID = Auth::id();
+                $counts = Application::where('user_id', $loginUserID)
+                    ->selectRaw("
+                COUNT(CASE WHEN status_flag = 't' THEN 1 END) as pendingCount,
+                COUNT(CASE WHEN status_flag = 'e' THEN 1 END) as errorCount,
+                COUNT(CASE WHEN status = 'processing' THEN 1 END) as processingCount,
+                COUNT(CASE WHEN status = 'rejected' THEN 1 END) as rejectCount,
+                COUNT(CASE WHEN status = 'completed' THEN 1 END) as completedCount")->first();
+                return view('user_dashboard', compact('counts'));
+            } catch (\Exception $e) {
+                Log::error('Error: ' . $e->getMessage());
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Something went wrong. Please try again.',
+                    'error' => $e->getMessage(),
+                ], 500);
+            }
+        }
+        else
+        {
+            $userId = Auth::user()->id;
+
+
+            $pendingCount = ApplicationTransaction::where('forward_to_id', $userId)->where('status', 'pending')->distinct('application_id', 'forward_to_id')->count();
+            $completedCount = ApplicationTransaction::where('forward_to_id', $userId)->where('status', 'completed')->distinct('application_id')->count();
+            $processingCount = ApplicationTransaction::where('forward_to_id', $userId)->where('status', 'processing')->distinct('application_id')->count();
+            $rejectCount = ApplicationTransaction::where('forward_to_id', $userId)->where('status', 'rejected')->distinct('application_id')->count();
+
+            return view('home', compact('pendingCount', 'completedCount', 'processingCount', 'rejectCount'));
         }
     }
 
@@ -773,8 +788,8 @@ class ApplicationDetailController extends Controller
                     break;
             }
 
-            $getApplication = $query->orderBy('id', 'desc')->paginate(10);
-            return view('user_dashboard', compact('getApplication', 'type', 'counts'));
+            $getApplication = $query->orderBy('id', 'desc')->get();
+            return view('application_list_user', compact('getApplication', 'type', 'counts'));
         } catch (\Exception $e) {
             Log::error('Error: ' . $e->getMessage());
             return response()->json([
